@@ -74,6 +74,16 @@
         @click="save"
         :style="`height: ${sizeOfInput}px`"
       />
+
+      <!-- Ajout d'un bouton pour supprimer les recherches enregistrées -->
+      <q-btn
+        label="Supprimer les recherches"
+        color="orange-pumpkin"
+        text-color="black"
+        outlined
+        @click="clearSave"
+        :style="`height: ${sizeOfInput}px`"
+      />
     </div>
   </section>
 </template>
@@ -109,6 +119,15 @@ const sizeOfInput = ref(0)
 const save = () => {
   if (isAuthenticated.value) {
     searchStore.saveSearch(form.value)
+  } else {
+    authenticateStore.openAuthModal()
+  }
+}
+
+// Ajout de la méthode pour supprimer les recherches enregistrées
+const clearSave = () => {
+  if (isAuthenticated.value) {
+    searchStore.clearSavedSearch(form.value)
   } else {
     authenticateStore.openAuthModal()
   }

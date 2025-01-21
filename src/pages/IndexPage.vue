@@ -16,7 +16,7 @@
       >
         <template v-slot:after>
           <q-btn
-            label="Search"
+            label="Chercher un appartement"
             :style="`height: ${sizeOfInput}px; margin-left: -100px; width: 200px; z-index: 1;`"
             color="black"
             outlined

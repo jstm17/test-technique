@@ -5,25 +5,18 @@
     <section class="row items-center">
       <div class="col-11 flex items-center">
         <h2 class="text-h6 q-ma-none">Mes recherches :</h2>
-        <CardSavedSearch
-          @search="
-            (v) => {
-              setFormWithSavedSearch(v)
-            }
-          "
-        />
+        <CardSavedSearch @search="(v) => {
+            setFormWithSavedSearch(v)
+          }
+          " />
       </div>
       <div class="col-1 flex justify-end">
         <h2 class="text-h6 q-ma-none">{{ filteredAccommodations.length }} résultats</h2>
       </div>
     </section>
     <section class="flex q-mt-md" style="gap: 20px">
-      <q-card
-        v-for="(accommodation, key) in filteredAccommodations"
-        :key="key"
-        class="accommodation-card"
-        @click="searchStore.setAccommodation(accommodation)"
-      >
+      <q-card v-for="(accommodation, key) in filteredAccommodations" :key="key" class="accommodation-card"
+        @click="searchStore.setAccommodation(accommodation)">
         <CardAccommodation :accommodation="accommodation" />
       </q-card>
     </section>
@@ -61,6 +54,8 @@ const filterMethod = () => {
     max: form.value.max ? parseInt(form.value.max) : null,
   }
   filteredAccommodations.value = searchStore.filteringAccommodation(form.value)
+
+  setTitle(form.value.borough)
 }
 
 const setFormWithSavedSearch = ($event) => {
@@ -71,6 +66,7 @@ const setFormWithSavedSearch = ($event) => {
     min: $event.min,
     max: $event.max,
   }
+  console.log('cc');
   filterMethod()
 }
 
@@ -78,10 +74,19 @@ const resetMethod = () => {
   filteredAccommodations.value = searchStore.filteringAccommodation(null, true)
 }
 
+// Définir le titre de l'onglet selon le quartier filtré
+const setTitle = ($borough) => {
+    const borough = $borough ?  `: ${form.value.borough}` : '' ;
+  document.title = `Search ${borough}`
+} 
+
 onMounted(() => {
-  filteredAccommodations.value = accommodations.value.filter((accommodation) => {
-    return accommodation.borough === route.params.search
-  })
+  // Si on a un quartier sélectionné => on filtre sinon on affiche tout
+  filteredAccommodations.value = route.params.search ? 
+  accommodations.value.filter(accommodation => accommodation.borough === route.params.search) : searchStore.filteringAccommodation(null, true);
+
+  // Définir le titre de l'onglet si le quartier est sélectionné dans la homePage
+  setTitle(route.params.search ? `: ${route.params.search}` : '')
 })
 </script>
 

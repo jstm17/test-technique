@@ -50,6 +50,8 @@ import { ref, computed } from 'vue'
 import { useAuthenticateStore } from 'stores/authenticate-store.js'
 
 const authenticateStore = useAuthenticateStore()
+// On charge les données depuis Local storage
+authenticateStore.loadLocalStorageData()
 
 const authModal = computed(() => authenticateStore.authModal)
 const disabled = computed(() => {

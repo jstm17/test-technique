@@ -1342,7 +1342,10 @@ export const useSearchStore = defineStore('search', {
         if (form[key] !== null) {
           filtered = filtered.filter((item) => {
             if (key === 'min' || key === 'max') {
-              return item.price <= form.min && item.price >= form.max
+              // Si le loyer max n'est pas renseigné => on met par défaut la valeur maximale
+              const maxPrice = form.max ?? Infinity;
+              // J'ai inversé < par > et inversement pour corriger les filtres de loyer
+              return item.price >= form.min && item.price <= maxPrice
             } else return item[key] === form[key]
           })
         }
@@ -1351,7 +1354,8 @@ export const useSearchStore = defineStore('search', {
       return filtered
     },
     saveSearch(search) {
-      if (!this.savedSearch.find((item) => item !== search)) this.savedSearch.push(search)
+      // J'ai remplacé ! par = pour vérifier si l'élément existe déjà
+      if (!this.savedSearch.find((item) => item === search)) this.savedSearch.push(search)
     },
     clearSavedSearch(index) {
       this.savedSearch.splice(index, 1)

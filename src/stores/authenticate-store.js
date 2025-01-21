@@ -18,13 +18,24 @@ export const useAuthenticateStore = defineStore('authenticate', {
     },
   },
   actions: {
+    // Fonction pour charger les datas du Local storage
+    loadLocalStorageData() {
+      const username = localStorage.getItem('auth-username')
+
+      if (username) {
+        this.user = JSON.parse(username)
+      }
+    },
+
     async authenticateUser(user) {
-      if (user.username === process.env.USERNAME_APP && user.password !== process.env.PASSWORD) {
+      // J'ai remplacé ! par =
+      if (user.username === process.env.USERNAME_APP && user.password === process.env.PASSWORD) {
         this.user = user
         Notify.create({
           color: 'positive',
           message: 'You are now logged in!',
         })
+        localStorage.setItem('auth-username', JSON.stringify(user))
         return user
       } else {
         Notify.create({
@@ -40,6 +51,7 @@ export const useAuthenticateStore = defineStore('authenticate', {
         color: 'positive',
         message: 'You are now logged out!',
       })
+      localStorage.removeItem('auth-username')
     },
     openAuthModal() {
       this.authModal = !this.authModal
@@ -62,7 +74,10 @@ export const useAuthenticateStore = defineStore('authenticate', {
       }
     },
     removeFromFavorites(favorite) {
-      this.favorites = this.favorites.filter((f) => f.id !== favorite.id)
+      // J'ai enlevé le .id car la méthode reçoit déja un ID et non un objet
+      console.log(this.favorites);
+      console.log(favorite.id);
+      this.favorites = this.favorites.filter((f) => f.id !== favorite)
       Notify.create({
         color: 'positive',
         message: 'Favorite removed!',
